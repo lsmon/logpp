@@ -1,0 +1,53 @@
+// MIT License
+//
+// Copyright (c) 2023 Salomon Lee
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+//
+
+#pragma once
+#define VERSION "@PROJECT_VERSION@"
+#define DEFAULT_KEY_FILE_NAME "@PROJECT_NAME@"
+#define SERVER_NAME "@PROJECT_NAME@-server-@PROJECT_VERSION@"
+#define CLIENT_NAME "@PROJECT_NAME@-client-@PROJECT_VERSION@"
+
+#define ENABLE_TESTS true
+
+#define APPLE @IS_APPLE@
+#define LINUX @IS_UNIX@
+#define MSVC @IS_MSVC@
+
+#define CONFIG_PROP_FILE "@CONFIG_PROP@"
+#define KB 1024
+#define MB KB*KB
+#define GB KB*KB*KB
+#define PRV_KEY_ARCHIVE "./key/prv"
+#define PUB_KEY_ARCHIVE "./key/pub"
+#define BLOCKCHAIN_ARCHIVE "./blockchain"
+
+#define CHECK_IDLE_TASK_INTERVAL 3000
+#define TASK_DESTROY_INTERVAL 60
+#define IDLE_CHECK_POLL_EMPTY 500
+#define THREAD_WAIT_TIME_OUT 300
+
+#define RETRY_BASIC_INTERVAL 1000
+
+//#define DEBUG
+
+//#define DISCOVERY_MODE
