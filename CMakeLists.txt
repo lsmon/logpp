@@ -57,7 +57,9 @@ set(SRC sources/util/Date.cpp
         sources/util/properties/LogProperties.cpp)
 
 set(SOURCES ${INC} ${SRC})
-include_directories(include)
+
+set(INCLUDE include)
+include_directories(${INCLUDE})
 
 add_library(_${PROJECT_NAME} ${SOURCES})
 
