@@ -26,21 +26,13 @@
 
 
 #include <map>
-#include <util/ntp/NtpClient.hpp>
 
 class Date {
-private:
-    std::map<std::string, std::string> m_time_zone;
 public:
-    Date();
-
-    std::string getTodayDate();
-
     static std::string nowTime();
 
     static long timestamp();
 
-    static NtpClient ntpTimestamp();
 };
 
 
