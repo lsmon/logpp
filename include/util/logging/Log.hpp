@@ -36,13 +36,13 @@ private:
     Level logLevel;
     LogProperties *logProperties;
     std::string logLine;
-    bool isLevelDebug;
-    bool isLevelTrace;
-    bool isLevelError;
-    bool isLevelInfo;
-    bool isLevelWarning;
-    bool isLevelStealth;
-    bool isLevelSilent;
+    bool isLevelDebug{};
+    bool isLevelTrace{};
+    bool isLevelError{};
+    bool isLevelInfo{};
+    bool isLevelWarning{};
+    bool isLevelStealth{};
+    bool isLevelSilent{};
 
     static std::string toString(Level l, bool isStdOut);
 

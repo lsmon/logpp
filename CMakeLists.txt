@@ -45,7 +45,6 @@ set(INC include/util/Date.hpp
         include/util/fio/PropertiesReader.hpp
         include/util/logging/Level.hpp
         include/util/logging/Log.hpp
-        include/util/ntp/NtpClient.hpp
         include/util/properties/LogProperties.hpp)
 
 set(SRC sources/util/Date.cpp
@@ -53,7 +52,6 @@ set(SRC sources/util/Date.cpp
         sources/util/fio/LogAppender.cpp
         sources/util/fio/PropertiesReader.cpp
         sources/util/logging/Log.cpp
-        sources/util/ntp/NtpClient.cpp
         sources/util/properties/LogProperties.cpp)
 
 set(SOURCES ${INC} ${SRC})
