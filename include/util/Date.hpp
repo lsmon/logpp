@@ -24,7 +24,7 @@
 #ifndef UTIL_DATE_HPP
 #define UTIL_DATE_HPP
 
-
+#include <string>
 #include <map>
 
 class Date {
