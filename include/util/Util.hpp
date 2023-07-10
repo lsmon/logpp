@@ -64,28 +64,28 @@ class Util {
     };
 
 private:
-    static std::vector<std::string> decomposeFileGz(std::string filename);
+    static std::vector<std::string> decomposeFileGz(const std::string& filename);
 
 public:
-    static std::string buildFileFullPath(std::string path, std::string filename);
+    static std::string buildFileFullPath(std::string path, const std::string& filename);
 
-    static std::string buildRollbackFileName(std::string filename);
+    static std::string buildRollbackFileName(const std::string& filename);
 
     static std::string trim(const std::string &str);
 
-    static std::string recoverFilePath(std::string filename);
+    static std::string recoverFilePath(const std::string& filename);
 
-    static std::vector<std::string> disassembleFileName(std::string filename);
+    static std::vector<std::string> disassembleFileName(const std::string& filename);
 
-    static std::string getPathToFile(std::string filename);
+    static std::string getPathToFile(const std::string& filename);
 
-    static std::string getNameOfFile(std::string filename);
+    static std::string getNameOfFile(const std::string& filename);
 
-    static std::string getExtensionOfFile(std::string filename);
+    static std::string getExtensionOfFile(const std::string& filename);
 
     static IpAddress getLocalIpAddress();
 
-    static std::vector<std::string> getPierListFrom(std::vector<std::string> localAddress, std::vector<std::string> pierList);
+    static std::vector<std::string> getPierListFrom(const std::vector<std::string>& localAddress, const std::vector<std::string>& pierList);
 
 };
 
