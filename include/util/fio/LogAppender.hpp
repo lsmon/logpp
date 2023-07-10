@@ -38,8 +38,9 @@ private:
 
     void moveLogFile();
 
+#ifdef __linux__
     bool compressLog();
-
+#endif
     void removeOldCompressions();
 
 public:

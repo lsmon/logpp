@@ -93,6 +93,7 @@ void LogAppender::write(const std::string& v) {
     _out_file_stream.close();
 }
 
+#ifdef __linux__
 bool LogAppender::compressLog() {
     // Open the input file in binary mode
     std::ifstream inputFile(_filename, std::ios::binary);
@@ -162,6 +163,7 @@ bool LogAppender::compressLog() {
     std::cout << "File compressed successfully: " << _filename << " -> " << compressed << std::endl;
     return true;
 }
+#endif
 
 template<class T>
 LogAppender &LogAppender::operator<<(const T &v) {
