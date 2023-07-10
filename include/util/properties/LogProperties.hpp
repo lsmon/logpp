@@ -32,56 +32,56 @@
 
 class LogProperties {
 private:
-    Level logLevel;
-    std::string logPath;
-    std::string logFile;
-    std::string maxSz;
-    int rolloverLimit;
-    LogAppender *logAppender;
+    Level _log_level;
+    std::string _log_path;
+    std::string _log_file;
+    std::string _max_sz;
+    int _rollover_limit{};
+//    LogAppender *_log_appender;
 
     Level toLogLevel(std::string level);
 
-    void setProperties(PropertiesReader config);
+    void setProperties(const PropertiesReader& config);
 
     void setProperties();
 
-    void initLogAppender();
+//    void initLogAppender();
 
 public:
     LogProperties();
 
-    LogProperties(std::string propertyFile);
+    explicit LogProperties(const std::string& propertyFile);
 
-    LogProperties(PropertiesReader config);
+    explicit LogProperties(const PropertiesReader& config);
 
-    LogProperties(const std::string &logLevel, const std::string &logPath, const std::string &logFile,
-                  const std::string &mMaxSz);
+    LogProperties(const std::string &logLevel, std::string logPath, std::string logFile,
+                  std::string mMaxSz);
 
     virtual ~LogProperties();
 
-    Level getLogLevel() const;
+    [[nodiscard]] Level getLogLevel() const;
 
     void setLogLevel(const std::string &logLevel);
 
-    const std::string &getLogPath() const;
+    [[nodiscard]] const std::string &getLogPath() const;
 
     void setLogPath(const std::string &logPath);
 
-    const std::string &getLogFile() const;
+    [[nodiscard]] const std::string &getLogFile() const;
 
     void setLogFile(const std::string &logFile);
 
-    const std::string &getMaxSz() const;
+    [[nodiscard]] const std::string &getMaxSz() const;
 
     void setMaxSz(const std::string &mMaxSz);
 
-    const int getRolloverLimit() const;
+    [[nodiscard]] int getRolloverLimit() const;
 
     void setRolloverLimit(const std::string &mRolloverFileQty);
 
     long getMaxSzBytes();
 
-    LogAppender *getLogAppender() const;
+//    [[nodiscard]] LogAppender *getLogAppender() const;
 
 
 };

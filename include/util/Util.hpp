@@ -25,23 +25,27 @@
 #define UTIL_UTIL_HPP
 
 #include <string>
+#include <utility>
 #include <vector>
 
 class IpAddress;
 
 class IpAddress {
 private:
-    std::vector<std::string> v4address;
-    std::vector<std::string> v6address;
+    std::vector<std::string> _v4address;
+
+    std::vector<std::string> _v6address;
+
     void computeIpV4LocalAddress();
+
     void computeIpV6LocalAddress();
 
 public:
     IpAddress();
 
-    const std::vector<std::string> &getIpV4Address() const;
+    [[nodiscard]] const std::vector<std::string> &getIpV4Address() const;
 
-    const std::vector<std::string> &getIpV6Address() const;
+    [[nodiscard]] const std::vector<std::string> &getIpV6Address() const;
 
     std::string toString();
 };
@@ -49,8 +53,8 @@ public:
 class Util {
     struct CompareStringFunctions {
         bool operator()(const std::vector<std::string> & list, std::string a, std::string b) {
-            std::vector<std::string> aDecomposeFileGz = decomposeFileGz(a);
-            std::vector<std::string> bDecomposeFileGz = decomposeFileGz(b);
+            std::vector<std::string> aDecomposeFileGz = decomposeFileGz(std::move(a));
+            std::vector<std::string> bDecomposeFileGz = decomposeFileGz(std::move(b));
 
             long ats = std::stol(aDecomposeFileGz[1]);
             long bts = std::stol(bDecomposeFileGz[1]);

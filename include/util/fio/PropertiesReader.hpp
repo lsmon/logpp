@@ -30,14 +30,14 @@
 
 class PropertiesReader {
 private:
-    std::unordered_map<std::string, std::string> properties;
+    std::unordered_map<std::string, std::string> _properties;
 
-    std::string filename;
+    std::string _filename;
 
-    PropertiesReader(const std::string &filename);
+    explicit PropertiesReader(const std::string &filename);
 
 public:
-    static PropertiesReader instance(std::string filename);
+    static PropertiesReader instance(const std::string& filename);
 
     const std::unordered_map<std::string, std::string> &getProperties() const;
 };

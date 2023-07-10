@@ -32,17 +32,17 @@
 
 class Log {
 private:
-    std::stringstream stream;
-    Level logLevel;
-    LogProperties *logProperties;
-    std::string logLine;
-    bool isLevelDebug{};
-    bool isLevelTrace{};
-    bool isLevelError{};
-    bool isLevelInfo{};
-    bool isLevelWarning{};
-    bool isLevelStealth{};
-    bool isLevelSilent{};
+    std::stringstream _stream;
+    Level _log_level;
+    LogProperties *_log_properties;
+    std::string _log_line;
+    bool _is_level_debug{};
+    bool _is_level_trace{};
+    bool _is_level_error{};
+    bool _is_level_info{};
+    bool _is_level_warning{};
+    bool _is_Level_stealth{};
+    bool _is_level_silent{};
 
     static std::string toString(Level l, bool isStdOut);
 
@@ -57,11 +57,12 @@ public:
     Log &operator<<(const T &v) {
         std::stringstream ss;
         ss << v;
-        stream << ss.str();
-        logLine += ss.str();
+        _stream << ss.str();
+        _log_line += ss.str();
         return *this;
     }
 };
+
 
 #ifdef __APPLE__
 #define LOG_INFO  Log(__FILE_NAME__, __PRETTY_FUNCTION__, log_info)

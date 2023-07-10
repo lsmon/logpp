@@ -31,24 +31,26 @@
 
 class LogAppender {
 private:
-    std::string m_filename;
-    std::ofstream m_ofs;
-    long m_fsz;
-    int m_rollover_limit;
+    std::string _filename;
+    std::ofstream _out_file_stream;
+    long _file_size;
+    int _rollover_limit;
 
     void moveLogFile();
+
+    bool compressLog();
 
     void removeOldCompressions();
 
 public:
-    LogAppender(const std::string &mFilename,long mFsz, int roLimit);
+
+    LogAppender(std::string mFilename,long mFsz, int roLimit);
 
     virtual ~LogAppender();
 
-    void write(std::string v);
+    void write(const std::string& v);
 
-    template<class T>
-    LogAppender &operator<<(const T &v);
+    template<class T> LogAppender &operator<<(const T &v);
 };
 
 

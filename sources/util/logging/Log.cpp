@@ -27,53 +27,60 @@
 
 
 Log::Log(const std::string &fileName, const std::string &funcName, Level l) {
+    _log_properties = nullptr;
     std::thread::id tid = std::this_thread::get_id();
     std::stringstream ss_tid;
     ss_tid << tid;
-    logLevel = l;
-    stream << Log::toString(l, true) << " (thx-id: " << ss_tid.str() << ") - " << NOW_TS << "- [" << fileName << " - " << funcName << "]: ";
+    _log_level = l;
+    _stream << Log::toString(l, true) << " (thx-id: " << ss_tid.str() << ") - " << NOW_TS << "- [" << fileName << " - " << funcName << "]: ";
     std::stringstream ss_ts;
     ss_ts << Date::timestamp();
-    logLine = Log::toString(l, false) + " (thx-id: " + ss_tid.str() + ") - " + NOW_TS + "(" + ss_ts.str() + ") - [" + fileName + " - " + funcName + "]: ";
-    logProperties = new LogProperties("./resources/logging.properties");
-    defineLogLevels(logProperties->getLogLevel());
+    _log_line = Log::toString(l, false) + " (thx-id: " + ss_tid.str() + ") - " + NOW_TS + "(" + ss_ts.str() + ") - [" + fileName + " - " + funcName + "]: ";
 }
 
 Log::~Log() {
-    bool LOG_STEALTH = false;
-    stream << "\n";
+//    bool LOG_STEALTH = false;
+    _stream << "\n";
     std::string line;
 
-    switch (logLevel) {
+    if (_log_properties == nullptr) {
+        _log_properties = new LogProperties("./resources/logging.properties");
+        defineLogLevels(_log_properties->getLogLevel());
+    }
+    switch (_log_level) {
         case log_error:
-            if (isLevelError)
-                line = stream.str();
+            if (_is_level_error)
+                line = _stream.str();
             break;
         case log_debug:
-            if (isLevelDebug)
-                line = stream.str();
+            if (_is_level_debug)
+                line = _stream.str();
             break;
         case log_trace:
-            if (isLevelTrace)
-                line = stream.str();
+            if (_is_level_trace)
+                line = _stream.str();
             break;
         case log_info:
-            if (isLevelInfo)
-                line = stream.str();
+            if (_is_level_info)
+                line = _stream.str();
             break;
         case log_warning:
-            if (isLevelWarning)
-                line = stream.str();
+            if (_is_level_warning)
+                line = _stream.str();
             break;
         default:
-            line = stream.str();
+            line = _stream.str();
             break;
     }
 
-    if (!line.empty() && !isLevelStealth && !isLevelSilent)
-        std::cout << line;
-    if (!isLevelSilent)
-        logProperties->getLogAppender()->write(logLine + "\n");
+    if (!_is_level_silent) {
+        if (!line.empty() && !_is_Level_stealth && !_is_level_silent) {
+            std::cout << line;
+            LogAppender(_log_properties->getLogFile(),_log_properties->getMaxSzBytes(), _log_properties->getRolloverLimit())
+            .write( _log_line + "\n");
+//            _log_properties->getLogAppender()->write(_log_line + "\n");
+        }
+    }
 }
 
 std::string Log::toString(Level l, bool isStdOut) {
@@ -104,76 +111,85 @@ std::string Log::toString(Level l, bool isStdOut) {
 void Log::defineLogLevels(Level level) {
     switch (level) {
         case log_verbose:
-            isLevelDebug = true;
-            isLevelError = true;
-            isLevelInfo = true;
-            isLevelTrace = true;
-            isLevelWarning = true;
-            isLevelStealth = false;
-            isLevelSilent = false;
+            _is_level_debug = true;
+            _is_level_error = true;
+            _is_level_info = true;
+            _is_level_trace = true;
+            _is_level_warning = true;
+            _is_Level_stealth = false;
+            _is_level_silent = false;
             break;
         case log_stealth:
-            isLevelDebug = false;
-            isLevelError = false;
-            isLevelInfo = false;
-            isLevelTrace = false;
-            isLevelWarning = false;
-            isLevelStealth = true;
-            isLevelSilent = false;
+            _is_level_debug = false;
+            _is_level_error = false;
+            _is_level_info = false;
+            _is_level_trace = false;
+            _is_level_warning = false;
+            _is_Level_stealth = true;
+            _is_level_silent = false;
             break;
         case log_silent:
-            isLevelDebug = false;
-            isLevelError = false;
-            isLevelInfo = false;
-            isLevelTrace = false;
-            isLevelWarning = false;
-            isLevelStealth = false;
-            isLevelSilent = true;
+            _is_level_debug = false;
+            _is_level_error = false;
+            _is_level_info = false;
+            _is_level_trace = false;
+            _is_level_warning = false;
+            _is_Level_stealth = false;
+            _is_level_silent = true;
             break;
         case log_info:
-            isLevelDebug = false;
-            isLevelError = false;
-            isLevelInfo = true;
-            isLevelTrace = false;
-            isLevelStealth = false;
-            isLevelWarning = false;
-            isLevelSilent = false;
+            _is_level_debug = false;
+            _is_level_error = false;
+            _is_level_info = true;
+            _is_level_trace = false;
+            _is_Level_stealth = false;
+            _is_level_warning = false;
+            _is_level_silent = false;
             break;
         case log_debug:
-            isLevelDebug = true;
-            isLevelError = false;
-            isLevelInfo = false;
-            isLevelTrace = false;
-            isLevelWarning = false;
-            isLevelStealth = false;
-            isLevelSilent = false;
+            _is_level_debug = true;
+            _is_level_error = false;
+            _is_level_info = false;
+            _is_level_trace = false;
+            _is_level_warning = false;
+            _is_Level_stealth = false;
+            _is_level_silent = false;
             break;
         case log_trace:
-            isLevelDebug = false;
-            isLevelError = false;
-            isLevelInfo = false;
-            isLevelTrace = true;
-            isLevelWarning = false;
-            isLevelStealth = false;
-            isLevelSilent = false;
+            _is_level_debug = false;
+            _is_level_error = false;
+            _is_level_info = false;
+            _is_level_trace = true;
+            _is_level_warning = false;
+            _is_Level_stealth = false;
+            _is_level_silent = false;
             break;
         case log_error:
-            isLevelDebug = false;
-            isLevelError = true;
-            isLevelInfo = false;
-            isLevelTrace = false;
-            isLevelWarning = false;
-            isLevelStealth = false;
-            isLevelSilent = false;
+            _is_level_debug = false;
+            _is_level_error = true;
+            _is_level_info = false;
+            _is_level_trace = false;
+            _is_level_warning = false;
+            _is_Level_stealth = false;
+            _is_level_silent = false;
+            break;
+        case log_warning:
+            _is_level_debug = false;
+            _is_level_error = false;
+            _is_level_info = false;
+            _is_level_trace = false;
+            _is_level_warning = true;
+            _is_Level_stealth = false;
+            _is_level_silent = false;
             break;
         default:
-            isLevelDebug = false;
-            isLevelError = false;
-            isLevelInfo = false;
-            isLevelTrace = false;
-            isLevelWarning = false;
-            isLevelStealth = false;
-            isLevelSilent = false;
+            _is_level_debug = false;
+            _is_level_error = false;
+            _is_level_info = false;
+            _is_level_trace = false;
+            _is_level_warning = false;
+            _is_Level_stealth = false;
+            _is_level_silent = false;
             break;
     }
 }

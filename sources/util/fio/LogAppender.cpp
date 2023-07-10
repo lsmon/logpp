@@ -29,16 +29,16 @@
 #include <zlib.h>
 #include <filesystem>
 #include <algorithm>
+#include <utility>
 #endif
 
 void LogAppender::moveLogFile() {
-    std::string ofname = Util::buildRollbackFileName(m_filename);
-    std::filebuf infile, outfile;
-    infile.open(m_filename.c_str(), std::ios::in | std::ios::binary);
+    std::string ofname = Util::buildRollbackFileName(_filename);
+    std::fstream infile, outfile;
+    infile.open(_filename.c_str(), std::ios::in | std::ios::binary);
     outfile.open(ofname.c_str(), std::ios::out | std::ios::binary);
-    std::copy(std::istreambuf_iterator<char>(&infile), {},
-              std::ostreambuf_iterator<char>(&outfile));
-#ifdef APPLE
+//    std::copy(std::istreambuf_iterator<char>(&infile), {},std::ostreambuf_iterator<char>(&outfile));
+#ifdef __APPLE__
     infile.close();
     outfile.close();
 
@@ -46,61 +46,128 @@ void LogAppender::moveLogFile() {
     cmd += ofname;
     std::system(cmd.c_str());
 #endif
-#ifdef UNIX
-    std::string cofname = ofname;
-    cofname += ".gz";
-    infile.open(ofname.c_str(), std::ios::in | std::ios::binary);
-    gzFile fi = (gzopen(cofname.c_str(), "wb"));
-    gzwrite(fi, infile.rdbuf(), infile.tellp());
-    gzclose(fi);
-
+#ifdef __linux__
+    compressLog();
 #endif
-    std::remove(m_filename.c_str());
+    std::remove(_filename.c_str());
 }
 
 void LogAppender::removeOldCompressions() {
-    std::string path = Util::recoverFilePath(m_filename);
+    std::string path = Util::recoverFilePath(_filename);
     std::vector<std::string> listOfGzFiles;
     for (const auto &file : std::filesystem::directory_iterator(path)) {
         std::string filename = Util::getNameOfFile(file.path().string());
         std::string extension = Util::getExtensionOfFile(file.path().string());
-        if (extension.compare(".gz") == 0 )
+        if (extension == ".gz" )
             listOfGzFiles.push_back(file.path().string());
     }
-    if (listOfGzFiles.size() > m_rollover_limit) {
+    if (listOfGzFiles.size() > _rollover_limit) {
         std::sort(listOfGzFiles.begin(), listOfGzFiles.end(), std::less<std::string>());
-        int limit = listOfGzFiles.size() - m_rollover_limit;
+        int limit = listOfGzFiles.size() - _rollover_limit;
         for (int i = 0; i < limit; i++) {
-//            std::cout << "Removing: " << listOfGzFiles[i] << std::endl;
             std::remove(listOfGzFiles[i].c_str());
         }
     }
 }
 
-LogAppender::LogAppender(const std::string &mFilename, long mFsz, int roLimit) : m_filename(mFilename), m_fsz(mFsz), m_rollover_limit(roLimit) {
-    m_ofs.open(m_filename, std::ios_base::app | std::ios_base::binary | std::ios_base::ate);
+LogAppender::LogAppender(std::string mFilename, long mFsz, int roLimit) : _filename(std::move(mFilename)), _file_size(mFsz), _rollover_limit(roLimit) {
+    _out_file_stream.open(_filename, std::ios_base::app);
 }
 
 LogAppender::~LogAppender() {
-    m_ofs.close();
+    if(_out_file_stream.is_open())
+        _out_file_stream.close();
+
 }
 
-void LogAppender::write(std::string v) {
-    if (!m_ofs.is_open()) {
-        m_ofs.open(m_filename, std::ios_base::app);
+void LogAppender::write(const std::string& v) {
+    if (!_out_file_stream.is_open()) {
+        _out_file_stream.open(_filename, std::ios_base::app);
     }
-    m_ofs << v;
-    if (m_ofs.tellp() >= m_fsz) {
-        m_ofs.close();
+    _out_file_stream << v;
+
+    if (_out_file_stream.tellp() >= _file_size) {
         moveLogFile();
         removeOldCompressions();
     }
+    _out_file_stream.close();
+}
+
+bool LogAppender::compressLog() {
+    // Open the input file in binary mode
+    std::ifstream inputFile(_filename, std::ios::binary);
+    if (!inputFile.is_open()) {
+        std::cerr << "Error opening input file: " << _filename << std::endl;
+        return false;
+    }
+
+    std::string compressed = _filename;
+    compressed += ".gz";
+    // Open the output file in binary mode
+    std::ofstream outputFile(compressed, std::ios::binary);
+    if (!outputFile.is_open()) {
+        std::cerr << "Error opening output file: " << compressed << std::endl;
+        inputFile.close();
+        return false;
+    }
+
+    // Prepare zlib structures
+    constexpr int BufferSize = 8192;
+    char buffer[BufferSize];
+
+    z_stream stream;
+    stream.zalloc = Z_NULL;
+    stream.zfree = Z_NULL;
+    stream.opaque = Z_NULL;
+
+    // Initialize zlib for compression
+    if (deflateInit(&stream, Z_BEST_COMPRESSION) != Z_OK) {
+        std::cerr << "Error initializing zlib for compression" << std::endl;
+        inputFile.close();
+        outputFile.close();
+        return false;
+    }
+
+    // Compress the input file and write the compressed data to the output file
+    do {
+        inputFile.read(buffer, BufferSize);
+        stream.avail_in = static_cast<uInt>(inputFile.gcount());
+        stream.next_in = reinterpret_cast<Bytef*>(buffer);
+
+        int ret;
+        do {
+            stream.avail_out = BufferSize;
+            stream.next_out = reinterpret_cast<Bytef*>(buffer);
+
+            ret = deflate(&stream, Z_FINISH);
+            if (ret == Z_STREAM_ERROR) {
+                std::cerr << "Error in zlib deflate: " << stream.msg << std::endl;
+                deflateEnd(&stream);
+                inputFile.close();
+                outputFile.close();
+                return false;
+            }
+
+            outputFile.write(buffer, BufferSize - stream.avail_out);
+        } while (stream.avail_out == 0);
+    } while (!inputFile.eof());
+
+    // Clean up zlib
+    deflateEnd(&stream);
+
+    // Close the input and output files
+    inputFile.close();
+    outputFile.close();
+
+    std::cout << "File compressed successfully: " << _filename << " -> " << compressed << std::endl;
+    return true;
 }
 
 template<class T>
 LogAppender &LogAppender::operator<<(const T &v) {
-    if (!m_ofs.is_open()) {
-        m_ofs.open(m_filename, std::ios_base::app);
+    if (!_out_file_stream.is_open()) {
+        _out_file_stream.open(_filename, std::ios_base::app);
     }
-    m_ofs << v;
+    _out_file_stream << v;
+    return *this;
 }

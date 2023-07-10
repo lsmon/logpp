@@ -126,7 +126,7 @@ IpAddress::IpAddress() {
 }
 
 const std::vector<std::string> &IpAddress::getIpV4Address() const {
-    return v4address;
+    return _v4address;
 }
 
 void IpAddress::computeIpV4LocalAddress() {
@@ -162,7 +162,7 @@ void IpAddress::computeIpV4LocalAddress() {
     const char* p = inet_ntop(AF_INET, &name.sin_addr, buffer, 80);
     if(p != NULL) {
 //        LOG_INFO << "Local IP address is: " << buffer;
-        v4address.push_back(buffer);
+        _v4address.push_back(buffer);
     } else {
         LOG_ERROR << "Error number: " << errno
                   << ". Error message: " << strerror(errno);
@@ -193,7 +193,7 @@ void IpAddress::computeIpV6LocalAddress() {
 #ifdef DEBUG
             LOG_DEBUG << "IPv6 address: " << addr_str;
 #endif
-            v6address.push_back(addr_str);
+            _v6address.push_back(addr_str);
         }
     }
 
@@ -201,5 +201,9 @@ void IpAddress::computeIpV6LocalAddress() {
 }
 
 const std::vector<std::string> &IpAddress::getIpV6Address() const {
-    return v6address;
+    return _v6address;
+}
+
+std::string IpAddress::toString() {
+    return std::string();
 }

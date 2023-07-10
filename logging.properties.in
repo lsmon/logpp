@@ -24,6 +24,6 @@
 
 level=verbose
 path=./
-file=@PROJECT_NAME@-@PRJECT_VERSION@.log
+file=@PROJECT_NAME@-@PROJECT_VERSION@.log
 maxsz=20MB
 roqty=2

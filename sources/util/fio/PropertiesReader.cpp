@@ -24,7 +24,7 @@
 #include <fstream>
 #include "util/fio/PropertiesReader.hpp"
 
-PropertiesReader::PropertiesReader(const std::string &filename) : filename(filename) {
+PropertiesReader::PropertiesReader(const std::string &filename) : _filename(filename) {
     std::ifstream file(filename);
     std::string line;
     while(std::getline(file, line)) {
@@ -34,14 +34,14 @@ PropertiesReader::PropertiesReader(const std::string &filename) : filename(filen
 
         std::string key = line.substr(0, pos);
         std::string value = line.substr(pos+1);
-        properties[key] = value;
+        _properties[key] = value;
     }
 }
 
-PropertiesReader PropertiesReader::instance(std::string filename) {
+PropertiesReader PropertiesReader::instance(const std::string& filename) {
     return PropertiesReader(filename);
 }
 
 const std::unordered_map<std::string, std::string> &PropertiesReader::getProperties() const {
-    return properties;
+    return _properties;
 }
