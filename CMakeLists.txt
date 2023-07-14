@@ -45,14 +45,14 @@ set(INC include/util/Date.hpp
         include/util/fio/PropertiesReader.hpp
         include/util/logging/Level.hpp
         include/util/logging/Log.hpp
-        include/util/properties/LogProperties.hpp)
+        include/util/properties/LogProperties.hpp ../sources/Helper.cpp ../include/Helper.hpp)
 
 set(SRC sources/util/Date.cpp
         sources/util/Util.cpp
         sources/util/fio/LogAppender.cpp
         sources/util/fio/PropertiesReader.cpp
         sources/util/logging/Log.cpp
-        sources/util/properties/LogProperties.cpp)
+        sources/util/properties/LogProperties.cpp ../sources/Helper.cpp ../include/Helper.hpp)
 
 set(SOURCES ${INC} ${SRC})
 
