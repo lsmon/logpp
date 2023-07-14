@@ -32,10 +32,16 @@ Log::Log(const std::string &fileName, const std::string &funcName, Level l) {
     std::stringstream ss_tid;
     ss_tid << tid;
     _log_level = l;
-    _stream << Log::toString(l, true) << " (thx-id: " << ss_tid.str() << ") - " << NOW_TS << "- [" << fileName << " - " << funcName << "]: ";
+    _stream << Log::toString(l, true) << " (thx-id: " << ss_tid.str() << ") - " << NOW_TS;
+#ifdef DEBUG
+    _stream << "- [" << fileName << " - " << funcName << "]: ";
+#endif
     std::stringstream ss_ts;
     ss_ts << Date::timestamp();
-    _log_line = Log::toString(l, false) + " (thx-id: " + ss_tid.str() + ") - " + NOW_TS + "(" + ss_ts.str() + ") - [" + fileName + " - " + funcName + "]: ";
+    _log_line = Log::toString(l, false) + " (thx-id: " + ss_tid.str() + ") - " + NOW_TS + "(" + ss_ts.str() + ") - ";
+#ifdef DEBUG
+    _log_line += "[" + fileName + " - " + funcName + "]: ";
+#endif
 }
 
 Log::~Log() {
