@@ -48,6 +48,6 @@
 
 #define RETRY_BASIC_INTERVAL 1000
 
-//#define DEBUG
+#define DEBUG
 
 //#define DISCOVERY_MODE
