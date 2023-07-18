@@ -26,12 +26,13 @@
 #include <util/Date.hpp>
 #include <iostream>     ///< cout
 #include <cstring>      ///< memset
-#include <errno.h>      ///< errno
+#include <cerrno>      ///< errno
 #include <sys/socket.h> ///< socket
 #include <netinet/in.h> ///< sockaddr_in
 #include <arpa/inet.h>  ///< getsockname
 #include <unistd.h>     ///< close
 #include <ifaddrs.h>    ///< ipv6
+#include <filesystem>
 
 std::string Util::buildFileFullPath(std::string path, const std::string& filename) {
     std::string fileFullPath = path;
@@ -111,13 +112,12 @@ std::vector<std::string> Util::decomposeFileGz(const std::string& filename) {
     return result;
 }
 
-IpAddress Util::getLocalIpAddress() {
-    return {};
-}
-
-std::vector<std::string>
-Util::getPierListFrom(const std::vector<std::string>& localAddress, const std::vector<std::string>& pierList) {
-    return std::vector<std::string>();
+std::string Util::getFileParentFolder(const std::string &filename) {
+    if (std::filesystem::is_regular_file(filename))
+        return std::filesystem::path(filename).parent_path().string();
+    else if (std::filesystem::is_directory(filename))
+        return filename;
+    return "";
 }
 
 IpAddress::IpAddress() {

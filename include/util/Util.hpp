@@ -83,9 +83,7 @@ public:
 
     static std::string getExtensionOfFile(const std::string& filename);
 
-    static IpAddress getLocalIpAddress();
-
-    static std::vector<std::string> getPierListFrom(const std::vector<std::string>& localAddress, const std::vector<std::string>& pierList);
+    static std::string getFileParentFolder(const std::string& filename);
 
 };
 
