@@ -29,7 +29,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(PROJECT_VERSION_MAJOR 0)
 set(PROJECT_VERSION_MINOR 9)
 set(PROJECT_VERSION_TWEAK 1)
-set(PROJECT_VERSION_PATCH 3)
+set(PROJECT_VERSION_PATCH 4)
 
 set(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_TWEAK}.${PROJECT_VERSION_PATCH})
 
@@ -45,14 +45,14 @@ set(INC include/util/Date.hpp
         include/util/fio/PropertiesReader.hpp
         include/util/logging/Level.hpp
         include/util/logging/Log.hpp
-        include/util/properties/LogProperties.hpp ../sources/Helper.cpp ../include/Helper.hpp)
+        include/util/properties/LogProperties.hpp)
 
 set(SRC sources/util/Date.cpp
         sources/util/Util.cpp
         sources/util/fio/LogAppender.cpp
         sources/util/fio/PropertiesReader.cpp
         sources/util/logging/Log.cpp
-        sources/util/properties/LogProperties.cpp ../sources/Helper.cpp ../include/Helper.hpp)
+        sources/util/properties/LogProperties.cpp)
 
 set(SOURCES ${INC} ${SRC})
 
