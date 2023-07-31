@@ -54,7 +54,7 @@ set(SRC sources/util/Date.cpp
         sources/util/logging/Log.cpp
         sources/util/properties/LogProperties.cpp)
 
-set(SOURCES ${INC} ${SRC} ../sources/MvTranscode.cpp ../include/MvTranscode.hpp)
+set(SOURCES ${INC} ${SRC})
 
 set(INCLUDE include)
 include_directories(${INCLUDE})
