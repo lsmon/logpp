@@ -28,28 +28,6 @@
 #include <utility>
 #include <vector>
 
-class IpAddress;
-
-class IpAddress {
-private:
-    std::vector<std::string> _v4address;
-
-    std::vector<std::string> _v6address;
-
-    void computeIpV4LocalAddress();
-
-    void computeIpV6LocalAddress();
-
-public:
-    IpAddress();
-
-    [[nodiscard]] const std::vector<std::string> &getIpV4Address() const;
-
-    [[nodiscard]] const std::vector<std::string> &getIpV6Address() const;
-
-    std::string toString();
-};
-
 class Util {
     struct CompareStringFunctions {
         bool operator()(const std::vector<std::string> & list, std::string a, std::string b) {
