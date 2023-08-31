@@ -85,6 +85,7 @@ public:
 
     static std::string getFileParentFolder(const std::string& filename);
 
+    static std::string getFilename(const std::string& filename);
 };
 
 

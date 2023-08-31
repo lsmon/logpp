@@ -37,10 +37,10 @@
 std::string Util::buildFileFullPath(std::string path, const std::string& filename) {
     std::string fileFullPath = path;
     std::string fname = filename;
-    if (fileFullPath.back() != '/' && filename.c_str()[0] != '/')
+    if (fileFullPath.back() != '/')
         fileFullPath.push_back('/');
-    if (filename.c_str()[0] == '/')
-        fname.erase(0, 1);
+    if (filename.c_str()[0] == '/' )
+        fname = fname.substr(1);
     fileFullPath += fname;
     return fileFullPath;
 }
@@ -118,6 +118,11 @@ std::string Util::getFileParentFolder(const std::string &filename) {
     else if (std::filesystem::is_directory(filename))
         return filename;
     return "";
+}
+
+std::string Util::getFilename(const std::string &filename) {
+    size_t dir_pos = filename.find_last_of('/');
+    return (dir_pos == std::string::npos)? filename : filename.substr(dir_pos+1, filename.length()-1);
 }
 
 IpAddress::IpAddress() {
