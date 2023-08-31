@@ -22,32 +22,9 @@
 //
 
 #pragma once
-#define VERSION "@PROJECT_VERSION@"
-#define DEFAULT_KEY_FILE_NAME "@PROJECT_NAME@"
-#define SERVER_NAME "@PROJECT_NAME@-server-@PROJECT_VERSION@"
-#define CLIENT_NAME "@PROJECT_NAME@-client-@PROJECT_VERSION@"
 
-#define ENABLE_TESTS true
-
-#define APPLE @IS_APPLE@
-#define LINUX @IS_UNIX@
-#define MSVC @IS_MSVC@
-
-#define CONFIG_PROP_FILE "@CONFIG_PROP@"
 #define KB 1024
 #define MB KB*KB
 #define GB KB*KB*KB
-#define PRV_KEY_ARCHIVE "./key/prv"
-#define PUB_KEY_ARCHIVE "./key/pub"
-#define BLOCKCHAIN_ARCHIVE "./blockchain"
-
-#define CHECK_IDLE_TASK_INTERVAL 3000
-#define TASK_DESTROY_INTERVAL 60
-#define IDLE_CHECK_POLL_EMPTY 500
-#define THREAD_WAIT_TIME_OUT 300
-
-#define RETRY_BASIC_INTERVAL 1000
 
 #define DEBUG
-
-//#define DISCOVERY_MODE
