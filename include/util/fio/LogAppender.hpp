@@ -27,6 +27,7 @@
 
 #include <string>
 #include <fstream>
+#include <thread>
 #include <config.h>
 
 class LogAppender {
@@ -35,17 +36,18 @@ private:
     std::ofstream _out_file_stream;
     long _file_size;
     int _rollover_limit;
-
+    std::string _path;
+    std::mutex compression_mutex;
     void moveLogFile();
 
-#ifdef __linux__
-    bool compressLog();
-#endif
+// #ifdef __linux__
+    void compressLog(const std::string& inFile);
+// #endif
     void removeOldCompressions();
 
 public:
 
-    LogAppender(std::string mFilename,long mFsz, int roLimit);
+    LogAppender(std::string mFilename,long mFsz, int roLimit, std::string path);
 
     virtual ~LogAppender();
 

@@ -21,95 +21,119 @@
 // SOFTWARE.
 //
 
-#include <util/fio/LogAppender.hpp>
+#include "util/fio/LogAppender.hpp"
 #include <iostream>
 #include <util/Util.hpp>
 
-#ifdef __linux__
 #include <zlib.h>
 #include <filesystem>
 #include <algorithm>
 #include <utility>
-#endif
 
-void LogAppender::moveLogFile() {
+void LogAppender::moveLogFile()
+{
+    compression_mutex.lock();
     std::string ofname = Util::buildRollbackFileName(_filename);
-    std::fstream infile, outfile;
-    infile.open(_filename.c_str(), std::ios::in | std::ios::binary);
-    outfile.open(ofname.c_str(), std::ios::out | std::ios::binary);
-//    std::copy(std::istreambuf_iterator<char>(&infile), {},std::ostreambuf_iterator<char>(&outfile));
-#ifdef __APPLE__
+
+    std::ifstream infile(_filename.c_str(), std::ios::binary);
+    std::ofstream outfile(ofname, std::ios::binary);
+    if (infile.is_open() && outfile.is_open())
+    {
+        std::copy(std::istreambuf_iterator<char>(infile),
+                  std::istreambuf_iterator<char>(),
+                  std::ostreambuf_iterator<char>(outfile));
+    }
+
     infile.close();
     outfile.close();
+    std::ofstream logFileTotruncate(_filename, std::ios::trunc);
+    if (logFileTotruncate.is_open())
+    {
+        std::cout << _filename << " has been emptied succesfully. " << std::endl;
+    }
+    else
+    {
+        std::cerr << _filename << " has failed emptying its content. " << std::endl;
+    }
+    logFileTotruncate.close();
 
-    std::string cmd = "gzip -8 ";
-    cmd += ofname;
-    std::system(cmd.c_str());
-#endif
-#ifdef __linux__
-    compressLog();
-#endif
-    std::remove(_filename.c_str());
+    compressLog(ofname);
+    compression_mutex.unlock();
 }
 
-void LogAppender::removeOldCompressions() {
-    std::string path = Util::recoverFilePath(_filename);
+void LogAppender::removeOldCompressions()
+{
+    compression_mutex.lock();
+    std::string path = _path;
     std::vector<std::string> listOfGzFiles;
-    for (const auto &file : std::filesystem::directory_iterator(path)) {
+    for (const auto &file : std::filesystem::directory_iterator(path))
+    {
         std::string filename = Util::getNameOfFile(file.path().string());
         std::string extension = Util::getExtensionOfFile(file.path().string());
-        if (extension == ".gz" )
+        if (extension == ".gz")
             listOfGzFiles.push_back(file.path().string());
     }
-    if (listOfGzFiles.size() > _rollover_limit) {
+    if (listOfGzFiles.size() > _rollover_limit)
+    {
         std::sort(listOfGzFiles.begin(), listOfGzFiles.end(), std::less<std::string>());
         int limit = listOfGzFiles.size() - _rollover_limit;
-        for (int i = 0; i < limit; i++) {
+        for (int i = 0; i < limit; i++)
+        {
             std::remove(listOfGzFiles[i].c_str());
         }
     }
+    compression_mutex.unlock();
 }
 
-LogAppender::LogAppender(std::string mFilename, long mFsz, int roLimit) : _filename(std::move(mFilename)), _file_size(mFsz), _rollover_limit(roLimit) {
+LogAppender::LogAppender(std::string mFilename, long mFsz, int roLimit, std::string path) : _filename(std::move(mFilename)), _file_size(mFsz), _rollover_limit(roLimit), _path(std::move(path))
+{
     _out_file_stream.open(_filename, std::ios_base::app);
 }
 
-LogAppender::~LogAppender() {
-    if(_out_file_stream.is_open())
+LogAppender::~LogAppender()
+{
+    if (_out_file_stream.is_open())
         _out_file_stream.close();
-
 }
 
-void LogAppender::write(const std::string& v) {
-    if (!_out_file_stream.is_open()) {
+void LogAppender::write(const std::string &v)
+{
+    if (!_out_file_stream.is_open())
+    {
         _out_file_stream.open(_filename, std::ios_base::app);
     }
     _out_file_stream << v;
 
-    if (_out_file_stream.tellp() >= _file_size) {
-        moveLogFile();
-        removeOldCompressions();
+    if (_out_file_stream.tellp() >= _file_size)
+    {
+        std::thread compressionThread([&]()
+                                      { moveLogFile(); });
+        std::thread removeThread([&]()
+                                 { removeOldCompressions(); });
+        compressionThread.join();
+        removeThread.join();
     }
     _out_file_stream.close();
 }
 
-#ifdef __linux__
-bool LogAppender::compressLog() {
+// #ifdef __linux__
+void LogAppender::compressLog(const std::string &inFile)
+{
     // Open the input file in binary mode
-    std::ifstream inputFile(_filename, std::ios::binary);
-    if (!inputFile.is_open()) {
-        std::cerr << "Error opening input file: " << _filename << std::endl;
-        return false;
+    std::ifstream inputFile(inFile, std::ios::binary);
+    if (!inputFile.is_open())
+    {
+        std::cerr << "Error opening input file: " << inFile << std::endl;
     }
 
-    std::string compressed = _filename;
-    compressed += ".gz";
+    std::string compressed = inFile;
+    compressed += ".zip";
     // Open the output file in binary mode
     std::ofstream outputFile(compressed, std::ios::binary);
-    if (!outputFile.is_open()) {
+    if (!outputFile.is_open())
+    {
         std::cerr << "Error opening output file: " << compressed << std::endl;
         inputFile.close();
-        return false;
     }
 
     // Prepare zlib structures
@@ -122,31 +146,31 @@ bool LogAppender::compressLog() {
     stream.opaque = Z_NULL;
 
     // Initialize zlib for compression
-    if (deflateInit(&stream, Z_BEST_COMPRESSION) != Z_OK) {
+    if (deflateInit(&stream, Z_DEFAULT_COMPRESSION) != Z_OK)
+    {
         std::cerr << "Error initializing zlib for compression" << std::endl;
-        inputFile.close();
-        outputFile.close();
-        return false;
     }
 
     // Compress the input file and write the compressed data to the output file
-    do {
+    do
+    {
         inputFile.read(buffer, BufferSize);
         stream.avail_in = static_cast<uInt>(inputFile.gcount());
-        stream.next_in = reinterpret_cast<Bytef*>(buffer);
+        stream.next_in = reinterpret_cast<Bytef *>(buffer);
 
         int ret;
-        do {
+        do
+        {
             stream.avail_out = BufferSize;
-            stream.next_out = reinterpret_cast<Bytef*>(buffer);
+            stream.next_out = reinterpret_cast<Bytef *>(buffer);
 
             ret = deflate(&stream, Z_FINISH);
-            if (ret == Z_STREAM_ERROR) {
+            if (ret == Z_STREAM_ERROR)
+            {
                 std::cerr << "Error in zlib deflate: " << stream.msg << std::endl;
                 deflateEnd(&stream);
                 inputFile.close();
                 outputFile.close();
-                return false;
             }
 
             outputFile.write(buffer, BufferSize - stream.avail_out);
@@ -159,15 +183,16 @@ bool LogAppender::compressLog() {
     // Close the input and output files
     inputFile.close();
     outputFile.close();
-
-    std::cout << "File compressed successfully: " << _filename << " -> " << compressed << std::endl;
-    return true;
+    std::remove(inFile.c_str());
+    std::cout << "File compressed successfully: " << inFile << " -> " << compressed << std::endl;
 }
-#endif
+// #endif
 
-template<class T>
-LogAppender &LogAppender::operator<<(const T &v) {
-    if (!_out_file_stream.is_open()) {
+template <class T>
+LogAppender &LogAppender::operator<<(const T &v)
+{
+    if (!_out_file_stream.is_open())
+    {
         _out_file_stream.open(_filename, std::ios_base::app);
     }
     _out_file_stream << v;

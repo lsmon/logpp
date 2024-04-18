@@ -82,9 +82,8 @@ Log::~Log() {
     if (!_is_level_silent) {
         if (!line.empty() && !_is_Level_stealth && !_is_level_silent) {
             std::cout << line;
-            LogAppender(_log_properties->getLogFile(),_log_properties->getMaxSzBytes(), _log_properties->getRolloverLimit())
+            LogAppender(_log_properties->getLogFile(),_log_properties->getMaxSzBytes(), _log_properties->getRolloverLimit(), _log_properties->getLogPath())
             .write( _log_line + "\n");
-//            _log_properties->getLogAppender()->write(_log_line + "\n");
         }
     }
 }

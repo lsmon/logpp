@@ -68,9 +68,9 @@ std::string Util::trim(const std::string &str) {
 }
 
 std::string Util::recoverFilePath(const std::string& filename) {
-    std::string path;
     size_t dir_pos = filename.find_last_of('/');
-    path = filename.substr(0, dir_pos);
+    if (dir_pos == std::string::npos) return "./";
+    std::string path = filename.substr(0, dir_pos);
     if (path.empty())
         return "./";
     return path;
