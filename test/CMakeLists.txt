@@ -26,6 +26,6 @@ enable_testing()
 
 add_executable(test_logging test/main.cpp)
 
-target_link_libraries(test_logging _${PROJECT_NAME})
+target_link_libraries(test_logging _${PROJECT_NAME}-${PROJECT_VERSION})
 
 add_test(TEST_LOGGING test_logging COMMAND test_logging)

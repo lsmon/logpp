@@ -28,8 +28,8 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(PROJECT_VERSION_MAJOR 0)
 set(PROJECT_VERSION_MINOR 9)
-set(PROJECT_VERSION_TWEAK 1)
-set(PROJECT_VERSION_PATCH 4)
+set(PROJECT_VERSION_TWEAK 2)
+set(PROJECT_VERSION_PATCH 5)
 
 set(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_TWEAK}.${PROJECT_VERSION_PATCH})
 
@@ -59,10 +59,13 @@ set(SOURCES ${INC} ${SRC})
 set(INCLUDE include)
 include_directories(${INCLUDE})
 
-add_library(_${PROJECT_NAME} ${SOURCES})
+add_library(_${PROJECT_NAME}-${PROJECT_VERSION} ${SOURCES})
 
 find_package(ZLIB REQUIRED)
+
 if (ZLIB_FOUND)
-target_link_libraries(_${PROJECT_NAME} PRIVATE ZLIB::ZLIB)
+target_link_libraries(_${PROJECT_NAME}-${PROJECT_VERSION} PRIVATE ZLIB::ZLIB)
 endif ()
-include(cmake/test.cmake)
+
+include(test/CMakeLists.txt)
+include(cpack//CMakeLists.txt)
