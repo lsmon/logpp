@@ -29,6 +29,7 @@
 #include <filesystem>
 #include <algorithm>
 #include <utility>
+#include <mutex>
 
 void LogAppender::moveLogFile()
 {

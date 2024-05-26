@@ -29,6 +29,7 @@
 #include <fstream>
 #include <thread>
 #include <config.h>
+#include <mutex>
 
 class LogAppender {
 private:
