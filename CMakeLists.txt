@@ -39,13 +39,23 @@ set(CONFIG ${CMAKE_SOURCE_DIR}/include/config.h)
 configure_file(config.h.in ${CONFIG})
 configure_file(logging.properties.in ${PROPERTY})
 
+set(INC_UTIL_FIO 
+        include/util/fio/LogAppender.hpp
+        include/util/fio/PropertiesReader.hpp)
+
+set(INC_UTIL_LOGGING 
+        include/util/logging/Level.hpp
+        include/util/logging/Log.hpp)
+
+set(INC_UTIL_PROPERTIES 
+        include/util/properties/LogProperties.hpp)
+
 set(INC include/util/Date.hpp
         include/util/Util.hpp
-        include/util/fio/LogAppender.hpp
-        include/util/fio/PropertiesReader.hpp
-        include/util/logging/Level.hpp
-        include/util/logging/Log.hpp
-        include/util/properties/LogProperties.hpp)
+        ${INC_UTIL_FIO}
+        ${INC_UTIL_LOGGING}
+        ${INC_UTIL_PROPERTIES}
+        )
 
 set(SRC sources/util/Date.cpp
         sources/util/Util.cpp
@@ -68,4 +78,4 @@ target_link_libraries(_${PROJECT_NAME}-${PROJECT_VERSION} PRIVATE ZLIB::ZLIB)
 endif ()
 
 include(test/CMakeLists.txt)
-include(cpack//CMakeLists.txt)
+include(cpack/CMakeLists.txt)
