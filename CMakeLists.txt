@@ -34,9 +34,9 @@ set(PROJECT_VERSION_PATCH 5)
 set(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_TWEAK}.${PROJECT_VERSION_PATCH})
 
 set(PROPERTY ${CMAKE_BINARY_DIR}/resources/logging.properties)
-set(CONFIG ${CMAKE_SOURCE_DIR}/include/config.h)
+set(CONFIG ${CMAKE_SOURCE_DIR}/include/logconfig.h)
 
-configure_file(config.h.in ${CONFIG})
+configure_file(logconfig.h.in ${CONFIG})
 configure_file(logging.properties.in ${PROPERTY})
 
 set(INC_UTIL_FIO 
@@ -55,7 +55,7 @@ set(INC include/util/Date.hpp
         ${INC_UTIL_FIO}
         ${INC_UTIL_LOGGING}
         ${INC_UTIL_PROPERTIES}
-        )
+        include/logconfig.h)
 
 set(SRC sources/util/Date.cpp
         sources/util/LogUtil.cpp

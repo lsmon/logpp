@@ -28,7 +28,7 @@
 #include <util/Date.hpp>
 #include <util/logging/Level.hpp>
 #include <util/properties/LogProperties.hpp>
-#include <config.h>
+#include <logconfig.h>
 
 class Log {
 private:

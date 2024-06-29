@@ -28,7 +28,7 @@
 #include <string>
 #include <fstream>
 #include <thread>
-#include <config.h>
+#include <logconfig.h>
 #include <mutex>
 
 class LogAppender {
