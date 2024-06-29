@@ -31,6 +31,8 @@ set(PROJECT_VERSION_MINOR 9)
 set(PROJECT_VERSION_TWEAK 2)
 set(PROJECT_VERSION_PATCH 5)
 
+set(CMAKE_OSX_SYSROOT /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk)
+
 set(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_TWEAK}.${PROJECT_VERSION_PATCH})
 
 set(PROPERTY ${CMAKE_BINARY_DIR}/resources/logging.properties)
@@ -51,14 +53,14 @@ set(INC_UTIL_PROPERTIES
         include/util/properties/LogProperties.hpp)
 
 set(INC include/util/Date.hpp
-        include/util/Util.hpp
+        include/util/LogUtil.hpp
         ${INC_UTIL_FIO}
         ${INC_UTIL_LOGGING}
         ${INC_UTIL_PROPERTIES}
         )
 
 set(SRC sources/util/Date.cpp
-        sources/util/Util.cpp
+        sources/util/LogUtil.cpp
         sources/util/fio/LogAppender.cpp
         sources/util/fio/PropertiesReader.cpp
         sources/util/logging/Log.cpp

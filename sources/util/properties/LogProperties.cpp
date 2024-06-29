@@ -22,7 +22,7 @@
 //
 
 #include <util/properties/LogProperties.hpp>
-#include <util/Util.hpp>
+#include <util/LogUtil.hpp>
 #include <utility>
 
 LogProperties::LogProperties() {

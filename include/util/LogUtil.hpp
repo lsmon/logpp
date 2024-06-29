@@ -28,7 +28,7 @@
 #include <utility>
 #include <vector>
 
-class Util {
+class LogUtil {
     struct CompareStringFunctions {
         bool operator()(const std::vector<std::string> & list, std::string a, std::string b) {
             std::vector<std::string> aDecomposeFileGz = decomposeFileGz(std::move(a));

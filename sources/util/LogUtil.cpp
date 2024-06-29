@@ -21,7 +21,7 @@
 // SOFTWARE.
 //
 
-#include <util/Util.hpp>
+#include <util/LogUtil.hpp>
 #include <util/logging/Log.hpp>
 #include <util/Date.hpp>
 #include <iostream>     ///< cout
@@ -34,7 +34,7 @@
 #include <ifaddrs.h>    ///< ipv6
 #include <filesystem>
 
-std::string Util::buildFileFullPath(std::string path, const std::string& filename) {
+std::string LogUtil::buildFileFullPath(std::string path, const std::string& filename) {
     std::string fileFullPath = path;
     std::string fname = filename;
     if (fileFullPath.back() != '/')
@@ -45,7 +45,7 @@ std::string Util::buildFileFullPath(std::string path, const std::string& filenam
     return fileFullPath;
 }
 
-std::string Util::buildRollbackFileName(const std::string& filename) {
+std::string LogUtil::buildRollbackFileName(const std::string& filename) {
     size_t dot = filename.find_last_of('.');
     std::string name = filename.substr(0, dot);
     std::string extension = getExtensionOfFile(filename);
@@ -58,7 +58,7 @@ std::string Util::buildRollbackFileName(const std::string& filename) {
     return name;
 }
 
-std::string Util::trim(const std::string &str) {
+std::string LogUtil::trim(const std::string &str) {
     size_t first = str.find_first_not_of(' ');
     if (std::string::npos == first)
         return str;
@@ -67,7 +67,7 @@ std::string Util::trim(const std::string &str) {
     return str.substr(first, (last - first +1));
 }
 
-std::string Util::recoverFilePath(const std::string& filename) {
+std::string LogUtil::recoverFilePath(const std::string& filename) {
     size_t dir_pos = filename.find_last_of('/');
     if (dir_pos == std::string::npos) return "./";
     std::string path = filename.substr(0, dir_pos);
@@ -76,18 +76,18 @@ std::string Util::recoverFilePath(const std::string& filename) {
     return path;
 }
 
-std::vector<std::string> Util::disassembleFileName(const std::string& filename) {
+std::vector<std::string> LogUtil::disassembleFileName(const std::string& filename) {
     std::vector<std::string> disassembled = {getPathToFile(filename), getNameOfFile(filename), getExtensionOfFile(filename)};
     return disassembled;
 }
 
-std::string Util::getPathToFile(const std::string& filename) {
+std::string LogUtil::getPathToFile(const std::string& filename) {
     size_t dir_pos = filename.find_last_of('/');
     std::string path = (dir_pos > filename.length() || dir_pos < 0)? "" : filename.substr(0, dir_pos);
     return trim(path);
 }
 
-std::string Util::getNameOfFile(const std::string& filename) {
+std::string LogUtil::getNameOfFile(const std::string& filename) {
     size_t dir_pos = filename.find_last_of('/');
     std::string path = filename.substr(0, dir_pos);
     std::string name = filename.substr(dir_pos+1, filename.length()-1);
@@ -96,13 +96,13 @@ std::string Util::getNameOfFile(const std::string& filename) {
     return trim(fname);
 }
 
-std::string Util::getExtensionOfFile(const std::string& filename) {
+std::string LogUtil::getExtensionOfFile(const std::string& filename) {
     size_t dot = filename.find_last_of('.');
     std::string extension = (dot > filename.length() || dot < 0)?"":filename.substr(dot, filename.length()-1);
     return trim(extension);
 }
 
-std::vector<std::string> Util::decomposeFileGz(const std::string& filename) {
+std::vector<std::string> LogUtil::decomposeFileGz(const std::string& filename) {
     size_t dash_pos = filename.find_last_of('-');
     size_t dot_pos = filename.find_first_of('.');
     std::string name = filename.substr(0, dash_pos);
@@ -112,7 +112,7 @@ std::vector<std::string> Util::decomposeFileGz(const std::string& filename) {
     return result;
 }
 
-std::string Util::getFileParentFolder(const std::string &filename) {
+std::string LogUtil::getFileParentFolder(const std::string &filename) {
     if (std::filesystem::is_regular_file(filename))
         return std::filesystem::path(filename).parent_path().string();
     else if (std::filesystem::is_directory(filename))
@@ -120,7 +120,7 @@ std::string Util::getFileParentFolder(const std::string &filename) {
     return "";
 }
 
-std::string Util::getFilename(const std::string &filename) {
+std::string LogUtil::getFilename(const std::string &filename) {
     size_t dir_pos = filename.find_last_of('/');
     return (dir_pos == std::string::npos)? filename : filename.substr(dir_pos+1, filename.length()-1);
 }

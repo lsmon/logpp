@@ -23,7 +23,7 @@
 
 #include "util/fio/LogAppender.hpp"
 #include <iostream>
-#include <util/Util.hpp>
+#include <util/LogUtil.hpp>
 
 #include <zlib.h>
 #include <filesystem>
@@ -34,7 +34,7 @@
 void LogAppender::moveLogFile()
 {
     compression_mutex.lock();
-    std::string ofname = Util::buildRollbackFileName(_filename);
+    std::string ofname = LogUtil::buildRollbackFileName(_filename);
 
     std::ifstream infile(_filename.c_str(), std::ios::binary);
     std::ofstream outfile(ofname, std::ios::binary);
@@ -69,8 +69,8 @@ void LogAppender::removeOldCompressions()
     std::vector<std::string> listOfGzFiles;
     for (const auto &file : std::filesystem::directory_iterator(path))
     {
-        std::string filename = Util::getNameOfFile(file.path().string());
-        std::string extension = Util::getExtensionOfFile(file.path().string());
+        std::string filename = LogUtil::getNameOfFile(file.path().string());
+        std::string extension = LogUtil::getExtensionOfFile(file.path().string());
         if (extension == ".gz")
             listOfGzFiles.push_back(file.path().string());
     }
