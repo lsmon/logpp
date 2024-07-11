@@ -50,8 +50,11 @@ set(INC_UTIL_LOGGING
 set(INC_UTIL_PROPERTIES 
         include/util/properties/LogProperties.hpp)
 
-set(INC include/util/Date.hpp
-        include/util/LogUtil.hpp
+set(INC_UTIL
+        include/util/Date.hpp
+        include/util/LogUtil.hpp)
+
+set(INC ${INC_UTIL}
         ${INC_UTIL_FIO}
         ${INC_UTIL_LOGGING}
         ${INC_UTIL_PROPERTIES}

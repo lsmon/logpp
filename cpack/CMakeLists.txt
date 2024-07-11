@@ -1,7 +1,7 @@
 #Specify installation rules
 install(TARGETS _${PROJECT_NAME}-${PROJECT_VERSION} DESTINATION lib)
 
-install(FILES ${INC} DESTINATION include)
+install(FILES include/logconfig.h DESTINATION include)
 install(FILES ${INC_UTIL} DESTINATION include/util)
 install(FILES ${INC_UTIL_FIO} DESTINATION include/util/fio)
 install(FILES ${INC_UTIL_LOGGING} DESTINATION include/util/logging)
