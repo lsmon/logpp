@@ -83,8 +83,9 @@ std::vector<std::string> LogUtil::disassembleFileName(const std::string& filenam
 
 std::string LogUtil::getPathToFile(const std::string& filename) {
     size_t dir_pos = filename.find_last_of('/');
-    std::string path = (dir_pos > filename.length() || dir_pos < 0)? "" : filename.substr(0, dir_pos);
-    return trim(path);
+    std::string path = (dir_pos > filename.length())? "" : filename.substr(0, dir_pos);
+    trim(path);
+    return path;
 }
 
 std::string LogUtil::getNameOfFile(const std::string& filename) {
@@ -93,13 +94,15 @@ std::string LogUtil::getNameOfFile(const std::string& filename) {
     std::string name = filename.substr(dir_pos+1, filename.length()-1);
     size_t dot = name.find_last_of('.');
     std::string fname = name.substr(0, dot);
-    return trim(fname);
+    trim(fname);
+    return fname;
 }
 
 std::string LogUtil::getExtensionOfFile(const std::string& filename) {
     size_t dot = filename.find_last_of('.');
-    std::string extension = (dot > filename.length() || dot < 0)?"":filename.substr(dot, filename.length()-1);
-    return trim(extension);
+    std::string extension = (dot > filename.length())?"":filename.substr(dot, filename.length()-1);
+    trim(extension);
+    return extension;
 }
 
 std::vector<std::string> LogUtil::decomposeFileGz(const std::string& filename) {

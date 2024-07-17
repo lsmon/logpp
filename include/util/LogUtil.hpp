@@ -29,17 +29,27 @@
 #include <vector>
 
 class LogUtil {
-    struct CompareStringFunctions {
-        bool operator()(const std::vector<std::string> & list, std::string a, std::string b) {
-            std::vector<std::string> aDecomposeFileGz = decomposeFileGz(std::move(a));
-            std::vector<std::string> bDecomposeFileGz = decomposeFileGz(std::move(b));
+    bool operator()(const std::vector<std::string> & list, std::string a, std::string b) {
+        std::vector<std::string> aDecomposeFileGz = decomposeFileGz(std::move(a));
+        std::vector<std::string> bDecomposeFileGz = decomposeFileGz(std::move(b));
 
-            long ats = std::stol(aDecomposeFileGz[1]);
-            long bts = std::stol(bDecomposeFileGz[1]);
+        // Find the indices of a and b in the list
+        auto aIt = std::find(list.begin(), list.end(), a);
+        auto bIt = std::find(list.begin(), list.end(), b);
 
-            return ats < bts;
+        // Check if both a and b are found in the list
+        if (aIt != list.end() && bIt != list.end()) {
+            // Calculate the indices of a and b in the list
+            size_t aIndex = std::distance(list.begin(), aIt);
+            size_t bIndex = std::distance(list.begin(), bIt);
+
+            // Compare the indices
+            return aIndex < bIndex;
+        } else {
+            // If either a or b is not found in the list, consider them equal
+            return false;
         }
-    };
+    }
 
 private:
     static std::vector<std::string> decomposeFileGz(const std::string& filename);
