@@ -21,9 +21,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ]]
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.16)
 project(logpp)
 
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 17)
 
 set(PROJECT_VERSION_MAJOR 0)
@@ -77,8 +78,10 @@ add_library(_${PROJECT_NAME}-${PROJECT_VERSION} ${SOURCES})
 find_package(ZLIB REQUIRED)
 
 if (ZLIB_FOUND)
-target_link_libraries(_${PROJECT_NAME}-${PROJECT_VERSION} PRIVATE ZLIB::ZLIB)
+target_link_libraries(_${PROJECT_NAME}-${PROJECT_VERSION} PRIVATE ZLIB::ZLIB stdc++fs)
 endif ()
+link_libraries(stdc++fs)
 
-include(test/CMakeLists.txt)
+target_link_options(_${PROJECT_NAME}-${PROJECT_VERSION} PRIVATE -lstdc++fs)
+#include(test/CMakeLists.txt)
 include(cpack/CMakeLists.txt)
