@@ -41,9 +41,9 @@ private:
     std::mutex compression_mutex;
     void moveLogFile();
 
-// #ifdef __linux__
+#ifdef __linux__
     void compressLog(const std::string& inFile);
-// #endif
+#endif
     void removeOldCompressions();
 
 public:

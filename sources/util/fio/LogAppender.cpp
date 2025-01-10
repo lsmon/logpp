@@ -58,7 +58,10 @@ void LogAppender::moveLogFile()
     }
     logFileTotruncate.close();
 
+#ifdef __linux__
     compressLog(ofname);
+#endif
+
     compression_mutex.unlock();
 }
 
@@ -117,7 +120,7 @@ void LogAppender::write(const std::string &v)
     _out_file_stream.close();
 }
 
-// #ifdef __linux__
+#ifdef __linux__
 void LogAppender::compressLog(const std::string &inFile)
 {
     // Open the input file in binary mode
@@ -187,7 +190,7 @@ void LogAppender::compressLog(const std::string &inFile)
     std::remove(inFile.c_str());
     std::cout << "File compressed successfully: " << inFile << " -> " << compressed << std::endl;
 }
-// #endif
+#endif
 
 template <class T>
 LogAppender &LogAppender::operator<<(const T &v)

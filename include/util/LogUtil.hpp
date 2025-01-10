@@ -30,7 +30,9 @@
 #include <iostream>
 #include <list>
 #include <algorithm>
+#ifndef __APPLE__
 #include <bits/stdc++.h>
+#endif
 #include <filesystem>
 
 class LogUtil {
