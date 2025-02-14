@@ -49,7 +49,7 @@ private:
     void defineLogLevels(Level level);
 
 public:
-    Log(const std::string &fileName, const std::string &funcName, Level l);
+    Log(const std::string &fileName, const std::string &funcName, const long& line, Level l);
 
     virtual ~Log();
 
@@ -64,22 +64,12 @@ public:
 };
 
 
-#ifdef __APPLE__
-#define LOG_INFO  Log(__FILE_NAME__, __PRETTY_FUNCTION__, log_info)
-#define LOG_WARN  Log(__FILE_NAME__, __PRETTY_FUNCTION__, log_warning)
-#define LOG_TRACE Log(__FILE_NAME__, __PRETTY_FUNCTION__, log_trace)
-#define LOG_ERROR Log(__FILE_NAME__, __PRETTY_FUNCTION__, log_error)
-#define LOG_DEBUG Log(__FILE_NAME__, __PRETTY_FUNCTION__, log_debug)
-#define LOG Log(__FILE_NAME__, __FUNCTION__, log_verbose)
-#endif
-#ifdef __linux__
-#define LOG_INFO  Log(__FILE__, __PRETTY_FUNCTION__, log_info)
-#define LOG_WARN  Log(__FILE__, __PRETTY_FUNCTION__, log_warning)
-#define LOG_TRACE Log(__FILE__, __PRETTY_FUNCTION__, log_trace)
-#define LOG_ERROR Log(__FILE__, __PRETTY_FUNCTION__, log_error)
-#define LOG_DEBUG Log(__FILE__, __PRETTY_FUNCTION__, log_debug)
-#define LOG Log(__FILE__, __FUNCTION__, log_verbose)
-#endif
+#define LOG_INFO  Log(__FILE__, __PRETTY_FUNCTION__, __LINE__, log_info)
+#define LOG_WARN  Log(__FILE__, __PRETTY_FUNCTION__, __LINE__, log_warning)
+#define LOG_TRACE Log(__FILE__, __PRETTY_FUNCTION__, __LINE__, log_trace)
+#define LOG_ERROR Log(__FILE__, __PRETTY_FUNCTION__, __LINE__, log_error)
+#define LOG_DEBUG Log(__FILE__, __PRETTY_FUNCTION__, __LINE__, log_debug)
+#define LOG Log(__FILE__, __FUNCTION__, __LINE__, log_verbose)
 
 #define NOW_TS Date::nowTime()
 
